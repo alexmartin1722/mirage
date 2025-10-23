@@ -106,10 +106,10 @@ python infof1.py \
 ```bash
 python infof1.py \
     --eval_type collection \
-    --prediction wikivideo/model_preds/qwen_72b_cag_relevant_citations.json \
-    --reference wikivideo/human_eval_subset.json \
+    --prediction data/wikivideo/model_preds/qwen_72b_cag_relevant_citations.json \
+    --reference data/wikivideo/human_eval_subset.json \
     --video_dir /exp/amartin/wikivideo/all_videos \
-    --output_dir wikivideo/model_preds/metric_outputs \
+    --output_dir data/wikivideo/model_preds/metric_outputs \
     --model_name qwen_7b
 ```
 #### CiteF1:
@@ -125,10 +125,10 @@ python citef1.py \
 ```bash
 python citef1.py \
     --eval_type collection \
-    --prediction wikivideo/model_preds/qwen_72b_cag_relevant_citations.json \
-    --reference wikivideo/human_eval_subset.json \
+    --prediction data/wikivideo/model_preds/qwen_72b_cag_relevant_citations.json \
+    --reference data/wikivideo/human_eval_subset.json \
     --video_dir /exp/amartin/wikivideo/all_videos \
-    --output_dir wikivideo/model_preds/metric_outputs \
+    --output_dir data/wikivideo/model_preds/metric_outputs \
     --model_name qwen_7b
 ```
 
