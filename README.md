@@ -12,9 +12,8 @@ MiRAGE: Multimodal Retrieval-Augmented Generation Evaluation.
 * [Supported Tasks](#supported-tasks)
 * [Installation](#installation)
 * [MiRAGE Usage](#mirage-usage)
-* [Other RAG Metric Usage](#other-rag-metric-usage-only-videorag-supported)
 * [Citation](#citation)
-* [Contacts](#contacts)
+* [Contact](#contact)
 
 
 ## Features
@@ -25,20 +24,11 @@ MiRAGE: Multimodal Retrieval-Augmented Generation Evaluation.
 
 ### Coming Soon
 - Support for calibrated models for claim verification in videos.
-- Support for more modalities (text, image, audio).
+- Support for more modalities (text, image, audio) and tasks.
 
 ## Supported Tasks
 ### Video RAG
 - WikiVideo: [repo](https://github.com/alexmartin1722/wikivideo), [paper](https://arxiv.org/abs/2504.00939)
-
-### Text RAG 
-- NeuCLIR: [repo](), [paper]()
-
-### Visual Document RAG 
-- Coming soon
-
-### Audio RAG 
-- Coming less soon
 
 ## Installation
 <details><summary><b>From PyPI</b></summary>
@@ -82,15 +72,69 @@ When evaluating VideoRAG, you will need the following data:
 - video directory, containing all the videos possible to use in RAG (for collection eval only),
 
 #### WikiVideo Data 
-We provide everything need to evaluate on 
+We provide everything need to evaluate WikiVideo RAG systems in `data/wikivideo`
+- Human judgments for grounding `data/wikivideo/human_judgments/grounding_judgments`
+- Human preference judgments (EQJs in the paper) `data/wikivideo/human_preference`
+- Metric preference judgments (ICJs in the paper) `data/wikivideo/metric_preference`
+- Model predictions for various systems in `data/wikivideo/model_preds/`
+- Eval subset from WikiVideo used in the human eval and paper `data/wikivideo/human_eval_subset.json`
+
+For any reference evaluation, you'll need to download the videos used in WikiVideo, which can be found on [huggingface](https://huggingface.co/datasets/hltcoe/wikivideo).
 
 
-#### Custom data 
+#### Custom data
+To run our code as is, you'll need to format your data and system predictions in the following formats:
+
+- **System Predictions**: A JSON file where each entry's key is the topic ID and the values associated with that ID are
+  - `prediction`: The generated text from the RAG system. We recommend stripping the citations from this so it is pure text. 
+  - `sentences`: The sentence tokenized version of the prediction.
+  - `claims`: A list where each index corresponds to a sentence and at each index is the subclaims for that sentence
+  - `citations`: A list where each index corresponds to a sentence and at each index is the citations for that sentence. We use the video path as the citation text
+    
+    Example:
+    ```json
+    {
+      "Topic_ID" : {
+        "prediction": "Generated text here...",
+        "sentences": ["Generated sentence 1.", "Generated sentence 2."],
+        "claims": [["Subclaim 1 for sentence 1.", "Subclaim 2 for sentence 1."], ["Subclaim 1 for sentence 2."]],
+        "citations": [["path to citation 1", "path to citation 2"], ["path to citation 3"]]
+      }
+    }
+    ```
+
+- **References**: A JSON file where each entry's key is the topic ID and the values associated with that ID are 
+  - `article`: The ground truth text for the topic written by a human. 
+  - `claims_to_supporting_videos`: a mapping between the claims of the reference and the videos that support those claims. This is a dictionary formatted s.t. each key is a claim and the values are (1) supporting videos and (2) the modalities from the videos that support the claim.
+  
+    Example:
+    ```json
+    {
+      "Topic_ID" : {
+        "article": "Ground truth article text here...",
+        "claims_to_supporting_videos": {
+          "Claim 1": {
+            "supporting_videos": ["video_id", "video_id"],
+            "videos_modalities": {
+              "video_id": ["video", "audio"],
+              "video_id": ["video"]
+            }
+          },
+          "Claim 2": {
+            "supporting_videos": ["video_id"],
+            "videos_modalities": {
+              "video_id": ["video", "audio", "ocr"]
+            }
+          }
+        }
+    }
+    ```
 
 </details>
 
 <details><summary><b>Evaluation</b></summary>
-When evaluating 
+
+When evaluating the RAG tasks, our metrics are driven by two files `infof1.py` and `citef1.py` for InfoF1 and CiteF1 respectively. 
 
 #### InfoF1:
 ```bash
@@ -134,38 +178,6 @@ python citef1.py \
 </details>
 
 
-### TextRAG Evaluation (Coming Soon)
-<details><summary><b>Data Prep</b></summary>
-
-
-</details>
-
-<details><summary><b>Evaluation</b></summary>
-
-
-</details>
-
-
-
-## Other RAG Metric Usage (Only VideoRAG Supported)
-### ALCE Evaluation 
-
-
-### RAGAS Evaluation
-
-
-### ARGUE Evaluation
-<details><summary><b>Data Prep</b></summary>
-
-</details>
-
-<details><summary><b>Evaluation</b></summary>
-Coming Soon. This was really messy to implement. For now we recommend 
-</details>
-
-
-
-
 
 ## Citation
 If you find MiRAGE useful in your research, please consider citing the following paper:
@@ -173,79 +185,7 @@ If you find MiRAGE useful in your research, please consider citing the following
 ```
 ```
 
-### Citing calibrated models
-Coming soon
-
-### Citing the other RAG Metrics
-#### ALCE
-```bibtex
-@inproceedings{gao-etal-2023-enabling,
-    title = "Enabling Large Language Models to Generate Text with Citations",
-    author = "Gao, Tianyu  and
-      Yen, Howard  and
-      Yu, Jiatong  and
-      Chen, Danqi",
-    editor = "Bouamor, Houda  and
-      Pino, Juan  and
-      Bali, Kalika",
-    booktitle = "Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing",
-    month = dec,
-    year = "2023",
-    address = "Singapore",
-    publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/2023.emnlp-main.398/",
-    doi = "10.18653/v1/2023.emnlp-main.398",
-    pages = "6465--6488"
-}
-```
-#### ARGUE
-```bibtex
-@misc{walden2025autoarguellmbasedreportgeneration,
-      title={Auto-ARGUE: LLM-Based Report Generation Evaluation}, 
-      author={William Walden and Orion Weller and Laura Dietz and Bryan Li and Gabrielle Kaili-May Liu and Yu Hou and Eugene Yang},
-      year={2025},
-      eprint={2509.26184},
-      archivePrefix={arXiv},
-      primaryClass={cs.IR},
-      url={https://arxiv.org/abs/2509.26184}, 
-}
-```
-```bibtex
-@inproceedings{Mayfield_2024, series={SIGIR 2024},
-   title={On the Evaluation of Machine-Generated Reports},
-   url={http://dx.doi.org/10.1145/3626772.3657846},
-   DOI={10.1145/3626772.3657846},
-   booktitle={Proceedings of the 47th International ACM SIGIR Conference on Research and Development in Information Retrieval},
-   publisher={ACM},
-   author={Mayfield, James and Yang, Eugene and Lawrie, Dawn and MacAvaney, Sean and McNamee, Paul and Oard, Douglas W. and Soldaini, Luca and Soboroff, Ian and Weller, Orion and Kayi, Efsun and Sanders, Kate and Mason, Marc and Hibbler, Noah},
-   year={2024},
-   month=jul, pages={1904–1915},
-   collection={SIGIR 2024} }
-```
-
-#### RAGAS
-```bibtex
-@inproceedings{es-etal-2024-ragas,
-    title = "{RAGA}s: Automated Evaluation of Retrieval Augmented Generation",
-    author = "Es, Shahul  and
-      James, Jithin  and
-      Espinosa Anke, Luis  and
-      Schockaert, Steven",
-    editor = "Aletras, Nikolaos  and
-      De Clercq, Orphee",
-    booktitle = "Proceedings of the 18th Conference of the European Chapter of the Association for Computational Linguistics: System Demonstrations",
-    month = mar,
-    year = "2024",
-    address = "St. Julians, Malta",
-    publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/2024.eacl-demo.16/",
-    doi = "10.18653/v1/2024.eacl-demo.16",
-    pages = "150--158",
-}
-```
-
-
-## Contacts
+## Contact
 If you have MiRAGE specific questions, would like a new feature, model support, supported dataset, etc., feel free to open an issue. 
 
 You can also reach out to me for general comments/suggestions/questions through email. 
