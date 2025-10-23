@@ -2,8 +2,7 @@
 
 <div align="center">
 <a href="" target="_blank"><img src=https://img.shields.io/badge/arXiv-b5212f.svg?logo=arxiv></a>
-<a href="" target="_blank"><img src=https://img.shields.io/badge/HuggingFace-Evaluate-FF6D00?logo=huggingface></a>
-<a href="https://opensource.org/license/apache-2-0"><img src="https://img.shields.io/static/v1?label=License&message=Apache-2.0&color=red"></a>
+<!-- <a href="" target="_blank"><img src=https://img.shields.io/badge/HuggingFace-Evaluate-FF6D00?logo=huggingface></a> -->
 </div>
 
 MiRAGE: Multimodal Retrieval-Augmented Generation Evaluation. 
