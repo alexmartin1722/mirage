@@ -22,24 +22,11 @@ MiRAGE: Multimodal Retrieval-Augmented Generation Evaluation.
 - Easy-to-use command line interface for running various metrics.
 - Evaluation for generation from videos.
 
-### Coming Soon
-- Support for calibrated models for claim verification in videos.
-- Support for more modalities (text, image, audio) and tasks.
-
 ## Supported Tasks
 ### Video RAG
 - WikiVideo: [repo](https://github.com/alexmartin1722/wikivideo), [paper](https://arxiv.org/abs/2504.00939)
 
 ## Installation
-<details><summary><b>From PyPI</b></summary>
-
-Coming soon...
-
-```bash
-pip install mirage-eval
-```
-</details>
-
 <details><summary><b>From Scratch</b></summary>
 
 ```bash
@@ -51,13 +38,6 @@ pip install evaluate
 pip install qwen-vl-utils[decord]==0.0.8
 pip install peft
 ```
-</details>
-
-<details><summary><b>From Environment File</b></summary>
-
-```bash
-```
-
 </details>
 
 ## MiRAGE Usage

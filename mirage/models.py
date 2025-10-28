@@ -1,5 +1,4 @@
 from typing import List, Optional, Tuple, Union, Dict
-# from models.prompts import CLAIM_VERIFICATION_PROMPT, CLAIM_VERIFICATION_TEXT_SYSTEM_PROMPT
 
 from mirage.prompts import (
     CLAIM_VERIFICATION_TEXT_SYSTEM_PROMPT,
@@ -10,7 +9,6 @@ from mirage.prompts import (
 import torch
 import logging
 
-# from transformers import AutoModelForCausalLM, AutoTokenizer, DynamicCache, StaticCache
 from vllm import LLM, SamplingParams
 from transformers import AutoProcessor
 from qwen_vl_utils import process_vision_info
@@ -26,19 +24,17 @@ class Text2TextVLLMScorer():
     def __init__(
         self, 
         model_name: str,
+        vlm_config: Optional[Dict] = None,
     ):
         self.model_name = model_name
-        # self.llm = Qwen(model_name=model_name, cache_dir="/exp/amartin/models/LLMs")
         self.visible_devices = torch.cuda.device_count()
         self.llm = LLM(
             model=model_name,
-            download_dir="/exp/amartin/models/LLMs",
             enable_prefix_caching=True,
-            # tensor_parallel_size=4,
             tensor_parallel_size=self.visible_devices,
             gpu_memory_utilization=0.9,
         )
-        self.processor = AutoProcessor.from_pretrained(self.model_name, cache_dir="/exp/amartin/models/LLMs")
+        self.processor = AutoProcessor.from_pretrained(self.model_name)
         self.sampling_params = SamplingParams(
             temperature=0.0,
             max_tokens=10,
@@ -89,20 +85,15 @@ class Text2VideoVLLMScorer():
         self.model_name = model_name
         self.max_videos = max_videos
         self.max_retries = max_retries
-        # self.llm = Qwen(model_name=model_name, cache_dir="/exp/amartin/models/LLMs")
         self.visible_devices = torch.cuda.device_count()
         self.llm = LLM(
             model=model_name,
-            # model="Qwen/Qwen2.5-VL-3B-Instruct",
-            download_dir="/exp/amartin/models/LLMs",
-            # enable_prefix_caching=True,
-            # tensor_parallel_size=4,
             tensor_parallel_size=self.visible_devices,
             gpu_memory_utilization=0.9,
             limit_mm_per_prompt={"video": max_videos},
         )
         self.processor = AutoProcessor.from_pretrained(
-            "Qwen/Qwen2.5-VL-3B-Instruct", cache_dir="/exp/amartin/models/LLMs",
+            "Qwen/Qwen2.5-VL-3B-Instruct",
             use_fast=False
         )
         self.sampling_params = SamplingParams(

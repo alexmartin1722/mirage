@@ -51,7 +51,6 @@ class InfoF1(evaluate.Metric):
         reference_claims=None,
         relevant_videos: List[str] = None,
         eval_type: str = "reference",
-        # scorer: str = "Qwen2.5",
         text_scorer: str = "Qwen/Qwen2.5-7B-Instruct",
         video_scorer: str = "Qwen/Qwen2.5-VL-7B-Instruct",
         prompt: str = CLAIM_VERIFICATION_TEXT_USER_PROMPT,
